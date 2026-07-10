@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>图片颜色聚类可视化</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
         /* ========== CSS 变量：莫兰迪色系 ========== */
@@ -56,35 +57,73 @@
 
         header {
             text-align: center;
-            padding: 24px 0 16px;
+            padding: 32px 0 20px;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .header-dots {
+            display: flex;
+            gap: 5px;
+            align-items: flex-end;
+            padding-bottom: 4px;
+        }
+
+        .header-dots .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: dotFloat 2s ease-in-out infinite;
+        }
+
+        .header-dots .dot:nth-child(1) { background: #c4a59d; animation-delay: 0s; }
+        .header-dots .dot:nth-child(2) { background: #a8b5a2; animation-delay: 0.15s; }
+        .header-dots .dot:nth-child(3) { background: #b8a9c9; animation-delay: 0.3s; }
+        .header-dots .dot:nth-child(4) { background: #c9b896; animation-delay: 0.45s; }
+        .header-dots .dot:nth-child(5) { background: #b0887e; animation-delay: 0.6s; }
+
+        @keyframes dotFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
         }
 
         header h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
+            font-family: 'Noto Serif SC', 'STSong', 'SimSun', serif;
+            font-size: 2.8rem;
+            font-weight: 900;
             color: var(--text-primary);
-            letter-spacing: 2px;
-            margin-bottom: 8px;
+            letter-spacing: 4px;
             position: relative;
             display: inline-block;
+            background: linear-gradient(135deg, #5c5248 0%, #8a7e72 50%, #b0887e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         header h1::after {
             content: '';
             position: absolute;
-            bottom: -6px;
+            bottom: -8px;
             left: 50%;
             transform: translateX(-50%);
-            width: 48px;
+            width: 60px;
             height: 3px;
             border-radius: 2px;
-            background: linear-gradient(90deg, var(--accent-rose), var(--accent-sage));
+            background: linear-gradient(90deg, var(--accent-rose), var(--accent-sage), var(--accent-lavender), var(--accent-warm));
         }
 
         header p {
             color: var(--text-secondary);
-            font-size: 0.95rem;
-            letter-spacing: 1px;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            margin-top: 12px;
         }
 
         .main-layout {
@@ -605,7 +644,23 @@
 
     <div class="container">
         <header>
-            <h1>图片颜色聚类可视化</h1>
+            <div class="header-brand">
+                <div class="header-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <h1>图片颜色聚类可视化</h1>
+                <div class="header-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
             <p>基于 K-Means 算法的像素颜色分析与 ECharts 可视化展示</p>
         </header>
 
