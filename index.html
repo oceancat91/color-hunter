@@ -7,12 +7,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <style>
-        /* ========== CSS 变量：莫兰迪色系 ========== */
+        /* ========== CSS 变量：莫兰迪色系 + Glassmorphism ========== */
         :root {
             --bg-primary: #e8e0d9;
             --bg-secondary: #f0ebe5;
-            --card-bg: #faf7f3;
-            --card-hover: #f5f1ec;
+            --card-bg: rgba(255, 255, 255, 0.18);
+            --card-border: rgba(255, 255, 255, 0.25);
+            --card-hover: rgba(255, 255, 255, 0.28);
             --border: #d9cec3;
             --border-light: #e5ddd5;
             --text-primary: #5c5248;
@@ -24,12 +25,13 @@
             --accent-sage-deep: #8b9a84;
             --accent-lavender: #b8a9c9;
             --accent-warm: #c9b896;
-            --shadow-sm: 0 2px 8px rgba(140, 120, 100, 0.08);
-            --shadow-md: 0 4px 16px rgba(140, 120, 100, 0.12);
-            --shadow-lg: 0 8px 30px rgba(140, 120, 100, 0.15);
+            --shadow-sm: 0 2px 12px rgba(140, 120, 100, 0.08);
+            --shadow-md: 0 4px 20px rgba(140, 120, 100, 0.10);
+            --shadow-lg: 0 8px 32px rgba(140, 120, 100, 0.12);
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 20px;
+            --glass-blur: 14px;
         }
 
         * {
@@ -40,13 +42,100 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background: var(--bg-primary);
-            background-image:
-                radial-gradient(ellipse at 20% 20%, #ece5dd 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, #e3dad0 0%, transparent 50%);
             min-height: 100vh;
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ========== 古韵 Aurora 动态流动背景 ========== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background: linear-gradient(135deg, #efe8e0 0%, #e8e0d9 25%, #f0ebe5 50%, #e5ddd8 75%, #ece5dd 100%);
+        }
+
+        .aurora-bg {
+            position: fixed;
+            inset: -50%;
+            z-index: -1;
+            pointer-events: none;
+            filter: blur(80px);
+            opacity: 0.65;
+        }
+
+        .aurora-layer {
+            position: absolute;
+            border-radius: 50%;
+            animation: auroraFlow 18s ease-in-out infinite;
+        }
+
+        .aurora-1 {
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle at 30% 30%, rgba(184, 169, 201, 0.35) 0%, rgba(200, 150, 150, 0.18) 40%, transparent 70%);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+            animation-duration: 20s;
+        }
+
+        .aurora-2 {
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle at 60% 60%, rgba(168, 181, 162, 0.30) 0%, rgba(180, 190, 160, 0.15) 40%, transparent 70%);
+            top: 30%;
+            right: -15%;
+            animation-delay: -6s;
+            animation-duration: 22s;
+        }
+
+        .aurora-3 {
+            width: 55vw;
+            height: 55vw;
+            background: radial-gradient(circle at 40% 70%, rgba(201, 184, 150, 0.28) 0%, rgba(200, 170, 140, 0.14) 40%, transparent 70%);
+            bottom: -20%;
+            left: 20%;
+            animation-delay: -12s;
+            animation-duration: 24s;
+        }
+
+        .aurora-4 {
+            width: 45vw;
+            height: 45vw;
+            background: radial-gradient(circle at 70% 20%, rgba(196, 165, 157, 0.30) 0%, rgba(210, 160, 150, 0.15) 40%, transparent 70%);
+            top: 10%;
+            right: 10%;
+            animation-delay: -4s;
+            animation-duration: 21s;
+        }
+
+        .aurora-5 {
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle at 25% 55%, rgba(214, 236, 240, 0.25) 0%, rgba(200, 220, 225, 0.12) 40%, transparent 70%);
+            top: 40%;
+            left: 30%;
+            animation-delay: -9s;
+            animation-duration: 26s;
+        }
+
+        @keyframes auroraFlow {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(4%, -3%) scale(1.05);
+            }
+            50% {
+                transform: translate(-2%, 5%) scale(0.95);
+            }
+            75% {
+                transform: translate(-5%, -1%) scale(1.04);
+            }
         }
 
         .container {
@@ -139,6 +228,27 @@
             display: flex;
             flex-direction: column;
             gap: 14px;
+            position: sticky;
+            top: 16px;
+            z-index: 10;
+            max-height: calc(100vh - 32px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(180, 160, 140, 0.3) transparent;
+            padding-bottom: 8px;
+        }
+
+        .control-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .control-panel::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .control-panel::-webkit-scrollbar-thumb {
+            background: rgba(180, 160, 140, 0.3);
+            border-radius: 4px;
         }
 
         .content-area {
@@ -151,10 +261,18 @@
 
         .panel-section {
             background: var(--card-bg);
-            border: 1px solid var(--border-light);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
             padding: 14px;
             box-shadow: var(--shadow-sm);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .panel-section:hover {
+            border-color: rgba(255, 255, 255, 0.40);
+            box-shadow: var(--shadow-md);
         }
 
         .panel-section h3 {
@@ -164,18 +282,20 @@
             color: var(--text-muted);
             margin-bottom: 8px;
             padding-bottom: 6px;
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             font-weight: 600;
         }
 
         .upload-area {
-            border: 2px dashed var(--border);
+            border: 2px dashed rgba(200, 180, 160, 0.35);
             border-radius: var(--radius-sm);
             padding: 12px 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
-            background: var(--bg-secondary);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             position: relative;
             min-height: 100px;
             display: flex;
@@ -209,10 +329,18 @@
 
         .preview-section {
             background: var(--card-bg);
-            border: 1px solid var(--border-light);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
             padding: 14px;
             box-shadow: var(--shadow-sm);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .preview-section:hover {
+            border-color: rgba(255, 255, 255, 0.40);
+            box-shadow: var(--shadow-md);
         }
 
         .preview-section h3 {
@@ -222,7 +350,7 @@
             color: var(--text-muted);
             margin-bottom: 8px;
             padding-bottom: 6px;
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             font-weight: 600;
         }
 
@@ -237,10 +365,18 @@
 
         .chart-section {
             background: var(--card-bg);
-            border: 1px solid var(--border-light);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
             padding: 14px;
             box-shadow: var(--shadow-sm);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chart-section:hover {
+            border-color: rgba(255, 255, 255, 0.40);
+            box-shadow: var(--shadow-md);
         }
 
         .chart-section h3 {
@@ -250,16 +386,24 @@
             color: var(--text-muted);
             margin-bottom: 8px;
             padding-bottom: 6px;
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             font-weight: 600;
         }
 
         .result-info {
             background: var(--card-bg);
-            border: 1px solid var(--border-light);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
             padding: 14px;
             box-shadow: var(--shadow-sm);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .result-info:hover {
+            border-color: rgba(255, 255, 255, 0.40);
+            box-shadow: var(--shadow-md);
         }
 
         .result-info h3 {
@@ -269,7 +413,7 @@
             color: var(--text-muted);
             margin-bottom: 8px;
             padding-bottom: 6px;
-            border-bottom: 1px solid var(--border-light);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
             font-weight: 600;
         }
 
@@ -478,10 +622,6 @@
             display: block;
         }
 
-        .harmony-result.loading {
-            border-left-color: var(--accent-warm);
-        }
-
         .harmony-result ul {
             list-style: disc;
             color: var(--text-primary);
@@ -632,9 +772,230 @@
             }
         }
 
-    </style>
+        /* ========== 极简 Logo ========== */
+        .site-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        .logo-outer {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid rgba(140, 120, 100, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoPulse 4s ease-in-out infinite;
+        }
+
+        .logo-inner {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-rose) 0%, var(--accent-sage) 50%, var(--accent-lavender) 100%);
+            position: relative;
+        }
+
+        .logo-inner::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            top: 4px;
+            left: 7px;
+        }
+
+        .logo-dot {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent-warm);
+            animation: logoOrbit 6s linear infinite;
+        }
+
+        .logo-dot:nth-child(2) {
+            animation-duration: 8s;
+            animation-delay: -3s;
+            background: var(--accent-rose);
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        @keyframes logoOrbit {
+            0% {
+                transform: rotate(0deg) translateX(24px) rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) translateX(24px) rotate(-360deg);
+            }
+        }
+
+        /* ========== Skeleton Screen 骨架屏 ========== */
+        .skeleton-container {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            padding: 4px 0;
+        }
+
+        .skeleton-container.active {
+            display: flex;
+        }
+
+        .skeleton-line {
+            height: 16px;
+            border-radius: 8px;
+            background: linear-gradient(90deg,
+                    rgba(180, 160, 140, 0.08) 0%,
+                    rgba(180, 160, 140, 0.18) 40%,
+                    rgba(180, 160, 140, 0.08) 80%);
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.5s ease-in-out infinite;
+        }
+
+        .skeleton-line.short { width: 60%; }
+        .skeleton-line.medium { width: 80%; }
+        .skeleton-line.long { width: 95%; }
+        .skeleton-line:nth-child(2) { animation-delay: 0.1s; }
+        .skeleton-line:nth-child(3) { animation-delay: 0.2s; }
+        .skeleton-line:nth-child(4) { animation-delay: 0.3s; height: 60px; }
+        .skeleton-line:nth-child(5) { animation-delay: 0.4s; }
+        .skeleton-line:nth-child(6) { animation-delay: 0.5s; height: 40px; width: 90%; }
+
+        @keyframes skeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* ========== 底部 Infinite Marquee ========== */
+        .marquee-section {
+            margin-top: 24px;
+            padding: 20px 0 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .marquee-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(180, 160, 140, 0.4) 20%, rgba(180, 160, 140, 0.4) 80%, transparent 100%);
+            margin-bottom: 20px;
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marqueeScroll 30s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 0 20px;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .marquee-copy {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 0 20px;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .marquee-logo-block {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.55;
+            transition: opacity 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .marquee-logo-block:hover {
+            opacity: 0.9;
+        }
+
+        .marquee-logo-block .mini-logo {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(140, 120, 100, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .marquee-logo-block .mini-logo .mini-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: block;
+        }
+
+        .marquee-logo-block .mini-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ========== 按钮 Glassmorphism 微调 ========== */
+        .btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .btn.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(196, 165, 157, 0.5);
+        }
+
+        .color-swatch {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
 </head>
 <body>
+
+    <!-- 古韵 Aurora 动态流动背景 -->
+    <div class="aurora-bg">
+        <div class="aurora-layer aurora-1"></div>
+        <div class="aurora-layer aurora-2"></div>
+        <div class="aurora-layer aurora-3"></div>
+        <div class="aurora-layer aurora-4"></div>
+        <div class="aurora-layer aurora-5"></div>
+    </div>
 
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
@@ -645,12 +1006,13 @@
     <div class="container">
         <header>
             <div class="header-brand">
-                <div class="header-dots">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
+                <!-- 极简 Logo -->
+                <div class="site-logo">
+                    <div class="logo-outer">
+                        <div class="logo-inner"></div>
+                    </div>
+                    <div class="logo-dot"></div>
+                    <div class="logo-dot"></div>
                 </div>
                 <h1>图片颜色聚类可视化</h1>
                 <div class="header-dots">
@@ -751,7 +1113,24 @@
                     <h3>聚类结果</h3>
                     <div class="color-swatches" id="colorSwatches"></div>
                     <div class="harmony-result" id="harmonyResult"></div>
+                    <!-- Skeleton Screen 骨架屏 -->
+                    <div class="skeleton-container" id="skeletonContainer">
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line long"></div>
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line medium"></div>
+                        <div class="skeleton-line"></div>
+                    </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- 底部 Infinite Marquee -->
+        <div class="marquee-section">
+            <div class="marquee-divider"></div>
+            <div class="marquee-track" id="marqueeTrack">
+                <!-- 由 JS 动态生成 -->
             </div>
         </div>
     </div>
@@ -1482,8 +1861,13 @@
 
             const harmonyDiv = document.getElementById('harmonyResult');
             const harmonyBtn = document.getElementById('harmonyBtn');
-            harmonyDiv.classList.add('show', 'loading');
-            harmonyDiv.innerHTML = '⏳ 正在调用 DeepSeek-V4-Pro 分析配色...';
+            const skeletonContainer = document.getElementById('skeletonContainer');
+
+            // 显示骨架屏
+            harmonyDiv.classList.remove('show');
+            harmonyDiv.innerHTML = '';
+            skeletonContainer.classList.add('active');
+            harmonyBtn.disabled = true;
 
             // 构建颜色描述（含占比）
             const totalPixels = clusterResult.total;
@@ -1545,7 +1929,9 @@
                 const data = await response.json();
                 const content = data.choices?.[0]?.message?.content || 'AI 未返回有效结果';
 
-                harmonyDiv.classList.remove('loading');
+                // 隐藏骨架屏
+                skeletonContainer.classList.remove('active');
+                harmonyDiv.classList.add('show');
 
                 // 尝试解析 JSON 结构化结果
                 let parsed;
@@ -1641,7 +2027,8 @@
                 `;
                 }
             } catch (error) {
-                harmonyDiv.classList.remove('loading');
+                skeletonContainer.classList.remove('active');
+                harmonyDiv.classList.add('show');
                 harmonyDiv.innerHTML = `
               <strong style="color:#c9b896;">请求失败：</strong>
               ${error.message}<br><br>
@@ -1661,6 +2048,7 @@
         // ==================== 页面初始化 ====================
         document.addEventListener('DOMContentLoaded', () => {
             initChart();
+            initMarquee();
 
             // 拖拽上传支持
             const uploadArea = document.getElementById('uploadArea');
@@ -1683,6 +2071,33 @@
                 }
             });
         });
+
+        // ==================== Infinite Marquee 初始化 ====================
+        function initMarquee() {
+            const track = document.getElementById('marqueeTrack');
+            const items = [
+                { text: '色谱实验室', dot: '#c4a59d' },
+                { text: 'Color Atlas', dot: '#a8b5a2' },
+                { text: '像素工坊', dot: '#b8a9c9' },
+                { text: 'ColorNova', dot: '#c9b896' },
+                { text: '色谱实验室', dot: '#c4a59d' },
+                { text: 'Color Atlas', dot: '#a8b5a2' },
+                { text: '像素工坊', dot: '#b8a9c9' },
+                { text: 'ColorNova', dot: '#c9b896' },
+            ];
+
+            // 生成两份完全一样的列表用于无缝循环
+            const listHtml = items.map(item => `
+                <div class="marquee-logo-block">
+                    <div class="mini-logo" style="border-color:${item.dot};">
+                        <span class="mini-dot" style="background:${item.dot};"></span>
+                    </div>
+                    <span class="mini-text">${item.text}</span>
+                </div>
+            `).join('');
+
+            track.innerHTML = `<div class="marquee-item">${listHtml}</div><div class="marquee-copy">${listHtml}</div>`;
+        }
     </script>
 </body>
 </html>
