@@ -485,9 +485,11 @@
 
         .btn {
             padding: 8px 18px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: var(--radius-sm);
-            background: var(--bg-secondary);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             color: var(--text-secondary);
             cursor: pointer;
             font-size: 0.85rem;
@@ -509,8 +511,8 @@
         }
 
         .btn.active {
-            border-color: var(--accent-rose-deep);
-            background: #f5ede7;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(196, 165, 157, 0.5);
             color: var(--accent-rose-deep);
             box-shadow: 0 2px 10px rgba(180, 130, 120, 0.1);
             font-weight: 600;
@@ -577,8 +579,10 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-light);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: var(--radius-sm);
             padding: 8px 12px;
             min-width: 140px;
@@ -686,13 +690,8 @@
         }
 
         @keyframes shimmer {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.4;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         .toast-container {
@@ -721,25 +720,13 @@
         }
 
         @keyframes toastIn {
-            from {
-                opacity: 0;
-                transform: translateY(-12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes toastOut {
-            from {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            to {
-                opacity: 0;
-                transform: translateY(-12px);
-            }
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-12px); }
         }
 
         .loading-overlay {
@@ -770,9 +757,7 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
         /* ========== 极简 Logo ========== */
@@ -837,12 +822,8 @@
         }
 
         @keyframes logoOrbit {
-            0% {
-                transform: rotate(0deg) translateX(24px) rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg) translateX(24px) rotate(-360deg);
-            }
+            0% { transform: rotate(0deg) translateX(24px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(24px) rotate(-360deg); }
         }
 
         /* ========== Skeleton Screen 骨架屏 ========== */
@@ -969,25 +950,7 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* ========== 按钮 Glassmorphism 微调 ========== */
-        .btn {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
-
-        .btn.active {
-            background: rgba(255, 255, 255, 0.25);
-            border-color: rgba(196, 165, 157, 0.5);
-        }
-
-        .color-swatch {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-        }
+    </style>
 </head>
 <body>
 
@@ -1140,22 +1103,21 @@
 
     <script>
         // ==================== 全局状态 ====================
-        let allPixels = null; // 全量像素池（图片加载时提取），按精度重新采样
+        let allPixels = null;
         let currentImage = null;
         let imageBase64 = null;
         let clusterResult = null;
-        let colorSpace = 'rgb'; // 'rgb' | 'lab'
-        let chartType = 'pie'; // 'pie' | 'bar'
+        let colorSpace = 'rgb';
+        let chartType = 'pie';
         let currentK = 5;
         let chartInstance = null;
-        let precisionMode = 'fine'; // 'coarse' | 'fine'
+        let precisionMode = 'fine';
 
         // ==================== 初始化 ECharts ====================
         function initChart() {
             const container = document.getElementById('chartContainer');
             chartInstance = echarts.init(container);
             window.addEventListener('resize', () => chartInstance && chartInstance.resize());
-            // 初始空状态
             chartInstance.setOption({
                 title: {
                     text: '等待聚类分析',
@@ -1192,9 +1154,6 @@
                 showToast('饼图：直观展示各颜色占比关系');
             } else {
                 showToast('柱状图：便于比较各颜色像素数量');
-            }
-            if (clusterResult) {
-                renderChart(clusterResult);
             }
             if (clusterResult) {
                 renderChart(clusterResult);
@@ -1301,7 +1260,6 @@
 
         // ==================== 颜色空间转换 ====================
         function rgbToLab(r, g, b) {
-            // RGB → XYZ
             let vr = r / 255;
             let vg = g / 255;
             let vb = b / 255;
@@ -1318,7 +1276,6 @@
             const y = vr * 0.2126729 + vg * 0.7151522 + vb * 0.0721750;
             const z = vr * 0.0193339 + vg * 0.1191920 + vb * 0.9503041;
 
-            // XYZ → LAB (D65)
             const xn = 95.047;
             const yn = 100.000;
             const zn = 108.883;
@@ -1335,7 +1292,6 @@
         }
 
         function labToRgb(L, A, B_val) {
-            // LAB → XYZ
             const fy = (L + 16) / 116;
             const fx = A / 500 + fy;
             const fz = fy - B_val / 200;
@@ -1348,7 +1304,6 @@
             const y = yn * (fy > 0.206893 ? fy * fy * fy : (fy - 16 / 116) / 7.787);
             const z = zn * (fz > 0.206893 ? fz * fz * fz : (fz - 16 / 116) / 7.787);
 
-            // XYZ → RGB
             let vr = x * 3.2404542 - y * 1.5371385 - z * 0.4985314;
             let vg = -x * 0.9692660 + y * 1.8760108 + z * 0.0415560;
             let vb = x * 0.0556434 - y * 0.2040259 + z * 1.0572252;
@@ -1368,7 +1323,6 @@
             return [r, g, b];
         }
 
-        // RGB → 色相（0-360），用于按色系排序
         function rgbToHue(r, g, b) {
             const nr = r / 255, ng = g / 255, nb = b / 255;
             const max = Math.max(nr, ng, nb), min = Math.min(nr, ng, nb);
@@ -1384,7 +1338,6 @@
 
         // ==================== 颜色名称映射数据库 ====================
         const COLOR_DATABASE = [
-            // 红色系
             { name: '深红', r: 139, g: 0, b: 0 }, { name: '红色', r: 255, g: 0, b: 0 },
             { name: '猩红', r: 220, g: 20, b: 60 }, { name: '胭脂红', r: 227, g: 38, b: 54 },
             { name: '朱红', r: 255, g: 76, b: 0 }, { name: '番茄红', r: 255, g: 99, b: 71 },
@@ -1395,13 +1348,11 @@
             { name: '粉红', r: 255, g: 192, b: 203 }, { name: '浅粉', r: 255, g: 182, b: 193 },
             { name: '珊瑚红', r: 255, g: 127, b: 80 }, { name: '石榴红', r: 240, g: 50, b: 60 },
             { name: '铁锈红', r: 165, g: 42, b: 42 }, { name: '绯红', r: 220, g: 20, b: 60 },
-            // 橙色系
             { name: '橙色', r: 255, g: 165, b: 0 }, { name: '深橙', r: 255, g: 140, b: 0 },
             { name: '蜜橙', r: 255, g: 175, b: 75 }, { name: '杏橙', r: 251, g: 206, b: 177 },
             { name: '橘红', r: 255, g: 69, b: 0 }, { name: '琥珀色', r: 255, g: 191, b: 0 },
             { name: '杏色', r: 251, g: 206, b: 177 }, { name: '南瓜橙', r: 255, g: 117, b: 24 },
             { name: '柿子橙', r: 255, g: 99, b: 25 }, { name: '金橙', r: 255, g: 166, b: 49 },
-            // 黄色系
             { name: '黄色', r: 255, g: 255, b: 0 }, { name: '金黄', r: 255, g: 215, b: 0 },
             { name: '柠檬黄', r: 255, g: 244, b: 79 }, { name: '淡黄', r: 255, g: 255, b: 153 },
             { name: '鹅黄', r: 255, g: 241, b: 67 }, { name: '土黄', r: 204, g: 153, b: 51 },
@@ -1409,7 +1360,6 @@
             { name: '奶油色', r: 255, g: 253, b: 208 }, { name: '象牙色', r: 255, g: 255, b: 240 },
             { name: '卡其色', r: 195, g: 176, b: 145 }, { name: '小麦色', r: 245, g: 222, b: 179 },
             { name: '玉米黄', r: 251, g: 236, b: 93 },
-            // 绿色系
             { name: '绿色', r: 0, g: 128, b: 0 }, { name: '深绿', r: 0, g: 100, b: 0 },
             { name: '翠绿', r: 0, g: 201, b: 87 }, { name: '翡翠绿', r: 0, g: 168, b: 107 },
             { name: '草绿', r: 124, g: 188, b: 74 }, { name: '橄榄绿', r: 128, g: 128, b: 0 },
@@ -1420,12 +1370,10 @@
             { name: '黄绿', r: 173, g: 255, b: 47 }, { name: '嫩绿', r: 188, g: 230, b: 128 },
             { name: '竹青', r: 120, g: 146, b: 98 }, { name: '葱绿', r: 165, g: 210, b: 57 },
             { name: '孔雀绿', r: 0, g: 168, b: 119 },
-            // 青色系
             { name: '青色', r: 0, g: 255, b: 255 }, { name: '浅青', r: 224, g: 255, b: 255 },
             { name: '湖蓝', r: 48, g: 194, b: 212 }, { name: '水绿', r: 180, g: 224, b: 208 },
             { name: '淡青', r: 176, g: 224, b: 230 }, { name: '靛青', r: 0, g: 86, b: 87 },
             { name: '天青', r: 86, g: 196, b: 222 },
-            // 蓝色系
             { name: '蓝色', r: 0, g: 0, b: 255 }, { name: '深蓝', r: 0, g: 0, b: 139 },
             { name: '天蓝', r: 135, g: 206, b: 235 }, { name: '宝蓝', r: 65, g: 105, b: 225 },
             { name: '牛仔蓝', r: 37, g: 83, b: 152 }, { name: '蓝灰', r: 102, g: 136, b: 170 },
@@ -1435,14 +1383,12 @@
             { name: '海军蓝', r: 0, g: 0, b: 128 }, { name: '青蓝', r: 70, g: 130, b: 180 },
             { name: '雾蓝', r: 102, g: 153, b: 170 }, { name: '灰蓝', r: 100, g: 120, b: 150 },
             { name: '矢车菊蓝', r: 100, g: 149, b: 237 },
-            // 紫色系
             { name: '紫色', r: 128, g: 0, b: 128 }, { name: '深紫', r: 75, g: 0, b: 130 },
             { name: '薰衣草', r: 230, g: 230, b: 250 }, { name: '紫罗兰', r: 138, g: 43, b: 226 },
             { name: '葡萄紫', r: 111, g: 0, b: 147 }, { name: '梅紫', r: 221, g: 160, b: 221 },
             { name: '淡紫', r: 200, g: 162, b: 200 }, { name: '茄皮紫', r: 97, g: 64, b: 81 },
             { name: '丁香紫', r: 204, g: 164, b: 209 }, { name: '紫藤色', r: 169, g: 140, b: 190 },
             { name: '兰紫', r: 120, g: 80, b: 160 }, { name: '藕荷色', r: 197, g: 180, b: 195 },
-            // 棕色系
             { name: '棕色', r: 165, g: 42, b: 42 }, { name: '深棕', r: 101, g: 67, b: 33 },
             { name: '咖啡色', r: 111, g: 78, b: 55 }, { name: '栗色', r: 128, g: 0, b: 0 },
             { name: '巧克力色', r: 123, g: 63, b: 0 }, { name: '赭色', r: 160, g: 82, b: 45 },
@@ -1450,7 +1396,6 @@
             { name: '驼色', r: 193, g: 154, b: 107 }, { name: '琥珀棕', r: 183, g: 117, b: 47 },
             { name: '胡桃色', r: 119, g: 81, b: 51 }, { name: '浅棕', r: 181, g: 131, b: 90 },
             { name: '檀色', r: 177, g: 113, b: 84 }, { name: '黄褐', r: 188, g: 143, b: 91 },
-            // 灰色系
             { name: '白色', r: 255, g: 255, b: 255 }, { name: '雪白', r: 255, g: 250, b: 250 },
             { name: '米白', r: 245, g: 245, b: 220 }, { name: '浅灰', r: 211, g: 211, b: 211 },
             { name: '银灰', r: 192, g: 192, b: 192 }, { name: '灰色', r: 128, g: 128, b: 128 },
@@ -1458,7 +1403,6 @@
             { name: '烟灰', r: 112, g: 128, b: 128 }, { name: '石板灰', r: 112, g: 128, b: 144 },
             { name: '珍珠灰', r: 234, g: 234, b: 234 }, { name: '雾灰', r: 186, g: 184, b: 178 },
             { name: '黑色', r: 0, g: 0, b: 0 }, { name: '墨黑', r: 30, g: 30, b: 30 },
-            // 莫兰迪/低饱和色系
             { name: '莫兰迪粉', r: 210, g: 177, b: 172 }, { name: '莫兰迪绿', r: 168, g: 181, b: 162 },
             { name: '莫兰迪蓝', r: 162, g: 174, b: 189 }, { name: '莫兰迪紫', r: 184, g: 169, b: 201 },
             { name: '莫兰迪黄', r: 215, g: 202, b: 168 }, { name: '莫兰迪灰', r: 186, g: 178, b: 172 },
@@ -1467,14 +1411,13 @@
             { name: '灰黄', r: 200, g: 188, b: 150 }, { name: '灰橙', r: 200, g: 160, b: 130 },
             { name: '豆沙色', r: 205, g: 155, b: 145 }, { name: '奶茶色', r: 200, g: 175, b: 145 },
             { name: '裸色', r: 222, g: 196, b: 176 }, { name: '燕麦色', r: 216, g: 198, b: 173 },
-            // 中国传统色
             { name: '胭脂', r: 157, g: 41, b: 51 }, { name: '朱砂', r: 255, g: 70, b: 40 },
             { name: '辰砂', r: 237, g: 87, b: 54 }, { name: '酡红', r: 240, g: 110, b: 90 },
             { name: '妃色', r: 237, g: 87, b: 107 }, { name: '品红', r: 240, g: 0, b: 120 },
-            { name: '檀色', r: 179, g: 109, b: 79 }, { name: '赭石', r: 134, g: 76, b: 49 },
+            { name: '赭石', r: 134, g: 76, b: 49 },
             { name: '鸭黄', r: 250, g: 218, b: 94 }, { name: '缃色', r: 240, g: 199, b: 66 },
             { name: '栌染', r: 184, g: 143, b: 53 }, { name: '秋色', r: 137, g: 108, b: 57 },
-            { name: '竹青', r: 120, g: 146, b: 98 }, { name: '葱倩', r: 12, g: 137, b: 24 },
+            { name: '葱倩', r: 12, g: 137, b: 24 },
             { name: '绿沈', r: 40, g: 123, b: 58 }, { name: '碧色', r: 27, g: 161, b: 131 },
             { name: '缥色', r: 161, g: 189, b: 173 }, { name: '艾绿', r: 164, g: 226, b: 117 },
             { name: '靛青', r: 22, g: 97, b: 111 }, { name: '群青', r: 76, g: 141, b: 174 },
@@ -1496,7 +1439,6 @@
                 const dr = rgb[0] - entry.r;
                 const dg = rgb[1] - entry.g;
                 const db = rgb[2] - entry.b;
-                // 加权距离：人眼对绿色最敏感，红色次之，蓝色最弱
                 const dist = 2 * dr * dr + 4 * dg * dg + 3 * db * db;
                 if (dist < minDist) {
                     minDist = dist;
@@ -1519,12 +1461,10 @@
         // ==================== K-Means 聚类（自实现） ====================
         function kmeans(data, k, maxIter = 50, tolerance = 0.1) {
             const n = data.length;
-            if (n === 0) return { centers: [], assignments: [], sizes: [] };
+            if (n === 0) return { centers: [], assignments: [], sizes: [], sse: Infinity };
             if (k > n) k = n;
 
-            // Step 1: 随机初始化 K 个中心（K-means++ 初始化可得到更好结果）
             const centers = [];
-            // 使用 K-means++ 初始化
             const firstIdx = Math.floor(Math.random() * n);
             centers.push([...data[firstIdx]]);
 
@@ -1536,7 +1476,6 @@
                         if (d < dists[j]) dists[j] = d;
                     }
                 }
-                // 按距离平方加权随机选择
                 const totalDist = dists.reduce((s, d) => s + d * d, 0);
                 let r = Math.random() * totalDist;
                 let idx = 0;
@@ -1551,7 +1490,6 @@
             let prevCenters = null;
 
             for (let iter = 0; iter < maxIter; iter++) {
-                // Step 2: 将每个数据点归为距离最近的中心
                 let changed = 0;
                 for (let i = 0; i < n; i++) {
                     let minDist = Infinity;
@@ -1567,7 +1505,6 @@
                     assignments[i] = bestCluster;
                 }
 
-                // Step 3: 重新计算中心位置
                 const newCenters = Array.from({ length: k }, () =>
                     new Array(data[0].length).fill(0)
                 );
@@ -1587,13 +1524,11 @@
                             newCenters[c][d] /= counts[c];
                         }
                     } else {
-                        // 空类簇：重新随机初始化
                         const ri = Math.floor(Math.random() * n);
                         newCenters[c] = [...data[ri]];
                     }
                 }
 
-                // Step 4: 检查收敛
                 let maxShift = 0;
                 if (prevCenters) {
                     for (let c = 0; c < k; c++) {
@@ -1610,11 +1545,9 @@
                 if (maxShift < tolerance && prevCenters !== null) break;
             }
 
-            // 计算每个类簇的大小
             const sizes = new Array(k).fill(0);
             for (let i = 0; i < n; i++) sizes[assignments[i]]++;
 
-            // 计算 SSE（类内平方和），用于多轮选优
             let sse = 0;
             for (let i = 0; i < n; i++) {
                 const c = assignments[i];
@@ -1625,8 +1558,6 @@
             return { centers, assignments, sizes, sse };
         }
 
-        // ==================== K-Means 多轮稳定版 ====================
-        // 运行 restarts 次，选取 SSE 最低的结果，消除随机初始化的波动
         function kmeansStable(data, k, restarts = 5) {
             let bestResult = null;
             let bestSSE = Infinity;
@@ -1654,16 +1585,13 @@
                     const totalSampled = sampledPixels.length;
                     let data = sampledPixels;
 
-                    // 颜色空间转换
                     if (colorSpace === 'lab') {
                         data = data.map(([r, g, b]) => rgbToLab(r, g, b));
                     }
 
-                    // 执行 K-Means（多轮取 SSE 最小，消除随机波动）
                     const restarts = precisionMode === 'coarse' ? 5 : 3;
                     const result = kmeansStable(data, k, restarts);
 
-                    // 转换中心点回 RGB 用于展示
                     const centersRGB = result.centers.map(c => {
                         if (colorSpace === 'lab') {
                             const rgb = labToRgb(c[0], c[1], c[2]);
@@ -1682,7 +1610,6 @@
                         colorNames: centersRGB.map(rgb => findClosestColorName(rgb)),
                     };
 
-                    // 按色相排序，使同色系颜色相邻（红→橙→黄→绿→青→蓝→紫→粉）
                     const sortIndices = clusterResult.centersRGB.map((rgb, i) => ({
                         i,
                         hue: rgbToHue(rgb[0], rgb[1], rgb[2])
@@ -1692,7 +1619,6 @@
                     clusterResult.sizes = sortIndices.map(i => clusterResult.sizes[i]);
                     clusterResult.colorNames = sortIndices.map(i => clusterResult.colorNames[i]);
 
-                    // 渲染
                     renderChart(clusterResult);
                     renderColorSwatches(clusterResult);
                     document.getElementById('resultInfo').style.display = 'block';
@@ -1712,12 +1638,11 @@
 
             const { centersRGB, sizes, k, colorNames } = result;
 
-            // 构建数据
             let seriesData = centersRGB.map((rgb, i) => ({
                 name: colorNames[i],
                 value: sizes[i],
                 itemStyle: {
-                    color: `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`,
+                    color: 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')',
                     borderColor: 'rgba(200,180,160,0.4)',
                     borderWidth: 2,
                     borderRadius: chartType === 'bar' ? 6 : undefined,
@@ -1729,7 +1654,6 @@
                 _rgb: rgb,
             }));
 
-            // 柱状图按占比从高到低排序
             if (chartType === 'bar') {
                 seriesData.sort((a, b) => b.value - a.value);
             }
@@ -1737,8 +1661,8 @@
             const option = {
                 backgroundColor: 'transparent',
                 title: {
-                    text: `K-Means 聚类结果 (K=${k}, ${result.colorSpace.toUpperCase()})`,
-                    subtext: `共采样 ${result.total} 个像素`,
+                    text: 'K-Means 聚类结果 (K=' + k + ', ' + result.colorSpace.toUpperCase() + ')',
+                    subtext: '共采样 ' + result.total + ' 个像素',
                     left: 'center',
                     textStyle: { color: '#5c5248', fontSize: 16 },
                     subtextStyle: { color: '#8a7e72', fontSize: 12 },
@@ -1751,24 +1675,16 @@
                     formatter: function(params) {
                         const data = chartType === 'pie' ? params : params[0];
                         const itemData = data.data;
-                        const rgb = itemData._rgb || itemData.itemStyle._rgb || [0, 0, 0];
+                        const rgb = itemData._rgb || [0, 0, 0];
                         const idx = seriesData.indexOf(itemData);
                         const name = (idx >= 0 && colorNames) ? colorNames[idx] : data.name;
-                        const pct = result.total > 0 ? (data.value / result.total * 100).toFixed(1) :
-                            '0.0';
-                        return `<div style="display:flex;align-items:center;gap:8px;">
-                  <span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:rgb(${rgb[0]},${rgb[1]},${rgb[2]})"></span>
-                  <b>${name}</b> | 类簇${idx + 1}: ${data.value} 像素 (${pct}%)<br/>
-                  RGB(${rgb[0]}, ${rgb[1]}, ${rgb[2]})
-                </div>`;
+                        const pct = result.total > 0 ? (data.value / result.total * 100).toFixed(1) : '0.0';
+                        return '<div style="display:flex;align-items:center;gap:8px;">' +
+                            '<span style="display:inline-block;width:14px;height:14px;border-radius:3px;background:rgb(' + rgb.join(',') + ')"></span>' +
+                            '<b>' + name + '</b> | 类簇' + (idx + 1) + ': ' + data.value + ' 像素 (' + pct + '%)<br/>' +
+                            'RGB(' + rgb.join(', ') + ')' +
+                            '</div>';
                     },
-                },
-                legend: {
-                    show: chartType === 'pie',
-                    orient: 'vertical',
-                    right: '5%',
-                    top: 'center',
-                    textStyle: { color: '#8a7e72', fontSize: 12 },
                 },
             };
 
@@ -1788,17 +1704,17 @@
                         formatter: function(p) { return p.name + '\n' + (p.percent != null ? p.percent.toFixed(1) + '%' : ''); },
                     },
                     emphasis: {
-                        label: {
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                        },
-                        itemStyle: {
-                            shadowBlur: 20,
-                            shadowColor: 'rgba(140,120,100,0.3)',
-                        },
+                        label: { fontSize: 16, fontWeight: 'bold' },
+                        itemStyle: { shadowBlur: 20, shadowColor: 'rgba(140,120,100,0.3)' },
                     },
                     data: seriesData,
                 }];
+                option.legend = {
+                    orient: 'vertical',
+                    right: '5%',
+                    top: 'center',
+                    textStyle: { color: '#8a7e72', fontSize: 12 },
+                };
             } else {
                 option.xAxis = {
                     type: 'category',
@@ -1818,19 +1734,10 @@
                     data: seriesData,
                     barWidth: '50%',
                     emphasis: {
-                        itemStyle: {
-                            shadowBlur: 15,
-                            shadowColor: 'rgba(140,120,100,0.25)',
-                        },
+                        itemStyle: { shadowBlur: 15, shadowColor: 'rgba(140,120,100,0.25)' },
                     },
                 }];
-                option.legend = undefined;
-                option.grid = {
-                    left: '8%',
-                    right: '5%',
-                    top: '18%',
-                    bottom: '8%',
-                };
+                option.grid = { left: '8%', right: '5%', top: '18%', bottom: '8%' };
             }
 
             chartInstance.setOption(option, true);
@@ -1844,16 +1751,14 @@
             container.innerHTML = centersRGB
                 .map((rgb, i) => {
                     const pct = total > 0 ? (sizes[i] / total * 100).toFixed(1) : '0.0';
-                    return `
-                <div class="color-swatch">
-                  <div class="swatch-block" style="background:rgb(${rgb[0]},${rgb[1]},${rgb[2]})"></div>
-                  <div class="swatch-info">
-                    <strong>${colorNames[i]}</strong>
-                    <span style="color:#8a7e72; font-size:0.75rem;"><br>类簇${i + 1} · RGB(${rgb[0]}, ${rgb[1]}, ${rgb[2]})</span>
-                    <span class="pct"> | ${sizes[i]} 像素 (${pct}%)</span>
-                  </div>
-                </div>
-              `;
+                    return '<div class="color-swatch">' +
+                        '<div class="swatch-block" style="background:rgb(' + rgb.join(',') + ')"></div>' +
+                        '<div class="swatch-info">' +
+                        '<strong>' + colorNames[i] + '</strong>' +
+                        '<span style="color:#8a7e72; font-size:0.75rem;"><br>类簇' + (i + 1) + ' · RGB(' + rgb.join(', ') + ')</span>' +
+                        '<span class="pct"> | ' + sizes[i] + ' 像素 (' + pct + '%)</span>' +
+                        '</div>' +
+                        '</div>';
                 })
                 .join('');
         }
@@ -1866,42 +1771,35 @@
             const harmonyBtn = document.getElementById('harmonyBtn');
             const skeletonContainer = document.getElementById('skeletonContainer');
 
-            // 显示骨架屏
             harmonyDiv.classList.remove('show');
             harmonyDiv.innerHTML = '';
             skeletonContainer.classList.add('active');
             harmonyBtn.disabled = true;
 
-            // 构建颜色描述（含占比）
             const totalPixels = clusterResult.total;
             const colorDescriptions = clusterResult.centersRGB
                 .map((rgb, i) => {
                     const pct = ((clusterResult.sizes[i] / totalPixels) * 100).toFixed(1);
-                    return `${clusterResult.colorNames[i]}(RGB: ${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 占比: ${pct}%)`;
+                    return clusterResult.colorNames[i] + '(RGB: ' + rgb.join(', ') + ', 占比: ' + pct + '%)';
                 })
                 .join('；');
 
-            const prompt = `你是一位资深色彩搭配与视觉设计专家。
-
-以下是使用 K-means 聚类从一张图片中提取的 ${clusterResult.k} 种主色调及其像素占比，请基于这些颜色数据从以下维度综合分析：
-
-提取的颜色与占比：${colorDescriptions}
-
-请按以下格式输出（用中文，JSON格式）：
-
-{
-  "colorScore": 颜色和谐度评分(1-10),
-  "aestheticScore": 整体美感评分(1-10),
-  "overallScore": 综合评分(1-10),
-  "harmonious": ["和谐之处1", "和谐之处2"],
-  "disharmonious": [
-    {"issue": "不和谐的颜色对或搭配", "reason": "原因", "suggestion": "改进建议（如：将某色向某方向偏移、降低饱和度、调整明度等）"}
-  ],
-  "aestheticComment": "基于颜色数据处理分析配色方案的和谐度及美化计划",
-  "advice": "综合改进建议（可选调色板推荐、替代色建议）"
-}
-
-如果全部和谐，disharmonious 数组为空。确保输出为有效 JSON。`;
+            const prompt = '你是一位资深色彩搭配与视觉设计专家。\n\n' +
+                '以下是使用 K-means 聚类从一张图片中提取的 ' + clusterResult.k + ' 种主色调及其像素占比，请基于这些颜色数据从以下维度综合分析：\n\n' +
+                '提取的颜色与占比：' + colorDescriptions + '\n\n' +
+                '请按以下格式输出（用中文，JSON格式）：\n\n' +
+                '{\n' +
+                '  "colorScore": 颜色和谐度评分(1-10),\n' +
+                '  "aestheticScore": 整体美感评分(1-10),\n' +
+                '  "overallScore": 综合评分(1-10),\n' +
+                '  "harmonious": ["和谐之处1", "和谐之处2"],\n' +
+                '  "disharmonious": [\n' +
+                '    {"issue": "不和谐的颜色对或搭配", "reason": "原因", "suggestion": "改进建议（如：将某色向某方向偏移、降低饱和度、调整明度等）"}\n' +
+                '  ],\n' +
+                '  "aestheticComment": "基于颜色数据处理分析配色方案的和谐度及美化计划",\n' +
+                '  "advice": "综合改进建议（可选调色板推荐、替代色建议）"\n' +
+                '}\n\n' +
+                '如果全部和谐，disharmonious 数组为空。确保输出为有效 JSON。';
 
             const apiUrl = 'https://api.deepseek.com/chat/completions';
             const apiKey = 'sk-26a25811b46d4996b9f08b5758aab84e';
@@ -1911,7 +1809,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`,
+                        'Authorization': 'Bearer ' + apiKey,
                     },
                     body: JSON.stringify({
                         model: 'deepseek-chat',
@@ -1926,20 +1824,17 @@
 
                 if (!response.ok) {
                     const errData = await response.json().catch(() => ({}));
-                    throw new Error(errData.error?.message || `HTTP ${response.status}: ${response.statusText}`);
+                    throw new Error(errData.error?.message || 'HTTP ' + response.status + ': ' + response.statusText);
                 }
 
                 const data = await response.json();
                 const content = data.choices?.[0]?.message?.content || 'AI 未返回有效结果';
 
-                // 隐藏骨架屏
                 skeletonContainer.classList.remove('active');
                 harmonyDiv.classList.add('show');
 
-                // 尝试解析 JSON 结构化结果
                 let parsed;
                 try {
-                    // 提取可能的 JSON 块
                     const jsonMatch = content.match(/\{[\s\S]*\}/);
                     if (jsonMatch) {
                         parsed = JSON.parse(jsonMatch[0]);
@@ -1949,97 +1844,67 @@
                 }
 
                 if (parsed && (typeof parsed.overallScore === 'number' || typeof parsed.score === 'number')) {
-                    // 兼容新旧 JSON 格式
                     const overall = parsed.overallScore ?? parsed.score;
                     const colorS = parsed.colorScore ?? parsed.score;
                     const aesthetic = parsed.aestheticScore ?? overall;
                     const scoreColor = overall >= 8 ? '#8b9a84' : overall >= 5 ? '#c9b896' : '#b0887e';
                     const scoreLabel = overall >= 8 ? '优秀' : overall >= 5 ? '一般' : '较差';
 
-                    let html = `<div style="margin-bottom:10px;">
-                <strong style="color:#b0887e;">✦ DeepSeek-V4-Pro 配色分析</strong>
-              </div>`;
+                    let html = '<div style="margin-bottom:10px;"><strong style="color:#b0887e;">✦ DeepSeek-V4-Pro 配色分析</strong></div>';
 
-                    // 三评分条
-                    html += `<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-                <div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:rgba(139,154,132,0.08);border-radius:10px;">
-                  <div style="font-size:1.4rem;font-weight:700;color:#8b9a84;">${colorS}</div>
-                  <div style="font-size:0.7rem;color:#8a7e72;margin-top:2px;">颜色和谐</div>
-                </div>
-                <div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:rgba(184,169,201,0.08);border-radius:10px;">
-                  <div style="font-size:1.4rem;font-weight:700;color:#b8a9c9;">${aesthetic}</div>
-                  <div style="font-size:0.7rem;color:#8a7e72;margin-top:2px;">整体美感</div>
-                </div>
-                <div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:${overall >= 8 ? 'rgba(139,154,132,0.15)' : overall >= 5 ? 'rgba(201,184,150,0.15)' : 'rgba(176,136,126,0.15)'};border-radius:10px;">
-                  <div style="font-size:1.4rem;font-weight:700;color:${scoreColor};">${overall}</div>
-                  <div style="font-size:0.7rem;color:#8a7e72;margin-top:2px;">综合 · ${scoreLabel}</div>
-                </div>
-              </div>`;
+                    html += '<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">' +
+                        '<div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:rgba(139,154,132,0.08);border-radius:10px;">' +
+                        '<div style="font-size:1.4rem;font-weight:700;color:#8b9a84;">' + colorS + '</div>' +
+                        '<div style="font-size:0.7rem;color:#8a7e72;margin-top:2px;">颜色和谐</div></div>' +
+                        '<div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;background:rgba(184,169,201,0.08);border-radius:10px;">' +
+                        '<div style="font-size:1.4rem;font-weight:700;color:#b8a9c9;">' + aesthetic + '</div>' +
+                        '<div style="font-size:0.7rem;color:#8a7e72;margin-top:2px;">整体美感</div></div>' +
+                        '<div style="flex:1;min-width:80px;text-align:center;padding:10px 6px;border-radius:10px;background:' + (overall >= 8 ? 'rgba(139,154,132,0.15)' : overall >= 5 ? 'rgba(201,184,150,0.15)' : 'rgba(176,136,126,0.15)') + ';">' +
+                        '<div style="font-size:1.4rem;font-weight:700;color:' + scoreColor + ';">' + overall + '</div>' +
+                        '<div style="font-size:0.7rem;color:#8a7e72;margin-top:2px;">综合 · ' + scoreLabel + '</div></div></div>';
 
-                    // 配色分析评论
                     if (parsed.aestheticComment) {
-                        html += `<div style="margin-bottom:12px;padding:10px 12px;background:rgba(184,169,201,0.06);border-left:3px solid #b8a9c9;border-radius:0 8px 8px 0;font-size:0.85rem;line-height:1.6;">
-                  <strong style="color:#b8a9c9;">✦ 配色方案分析</strong>
-                  <div style="color:#5c5248;margin-top:4px;">${parsed.aestheticComment}</div>
-                </div>`;
+                        html += '<div style="margin-bottom:12px;padding:10px 12px;background:rgba(184,169,201,0.06);border-left:3px solid #b8a9c9;border-radius:0 8px 8px 0;font-size:0.85rem;line-height:1.6;">' +
+                            '<strong style="color:#b8a9c9;">✦ 配色方案分析</strong>' +
+                            '<div style="color:#5c5248;margin-top:4px;">' + parsed.aestheticComment + '</div></div>';
                     }
 
-                    // 和谐之处
                     if (parsed.harmonious && parsed.harmonious.length > 0) {
-                        html += `<div style="margin-bottom:12px;">
-                  <strong style="color:#8b9a84;">✓ 和谐之处</strong>
-                  <ul style="margin:4px 0 0 16px;color:#5c5248;font-size:0.85rem;">`;
-                        parsed.harmonious.forEach(h => { html += `<li>${h}</li>`; });
-                        html += `</ul></div>`;
+                        html += '<div style="margin-bottom:12px;"><strong style="color:#8b9a84;">✓ 和谐之处</strong><ul style="margin:4px 0 0 16px;color:#5c5248;font-size:0.85rem;">';
+                        parsed.harmonious.forEach(function(h) { html += '<li>' + h + '</li>'; });
+                        html += '</ul></div>';
                     }
 
-                    // 不和谐之处 + 改进建议
                     if (parsed.disharmonious && parsed.disharmonious.length > 0) {
-                        html += `<div style="margin-bottom:12px;">
-                  <strong style="color:#b0887e;">⚠ 不和谐之处与改进建议</strong>`;
-                        parsed.disharmonious.forEach(d => {
-                            html += `<div style="margin:8px 0;padding:10px 12px;background:rgba(176,136,126,0.08);border-left:3px solid #b0887e;border-radius:0 8px 8px 0;font-size:0.85rem;line-height:1.6;">
-                      <div><strong style="color:#5c5248;">${d.issue}</strong></div>
-                      <div style="color:#8a7e72;">原因：${d.reason}</div>
-                      <div style="color:#8b9a84;">建议：${d.suggestion}</div>
-                    </div>`;
+                        html += '<div style="margin-bottom:12px;"><strong style="color:#b0887e;">⚠ 不和谐之处与改进建议</strong>';
+                        parsed.disharmonious.forEach(function(d) {
+                            html += '<div style="margin:8px 0;padding:10px 12px;background:rgba(176,136,126,0.08);border-left:3px solid #b0887e;border-radius:0 8px 8px 0;font-size:0.85rem;line-height:1.6;">' +
+                                '<div><strong style="color:#5c5248;">' + d.issue + '</strong></div>' +
+                                '<div style="color:#8a7e72;">原因：' + d.reason + '</div>' +
+                                '<div style="color:#8b9a84;">建议：' + d.suggestion + '</div></div>';
                         });
-                        html += `</div>`;
+                        html += '</div>';
                     }
 
-                    // 综合改进建议
                     if (parsed.advice) {
-                        html += `<div style="padding:10px 12px;background:rgba(139,154,132,0.08);border-left:3px solid #8b9a84;border-radius:0 8px 8px 0;font-size:0.85rem;line-height:1.6;">
-                  <strong style="color:#8b9a84;">✦ 综合改进建议</strong>
-                  <div style="color:#5c5248;margin-top:4px;">${parsed.advice}</div>
-                </div>`;
+                        html += '<div style="padding:10px 12px;background:rgba(139,154,132,0.08);border-left:3px solid #8b9a84;border-radius:0 8px 8px 0;font-size:0.85rem;line-height:1.6;">' +
+                            '<strong style="color:#8b9a84;">✦ 综合改进建议</strong>' +
+                            '<div style="color:#5c5248;margin-top:4px;">' + parsed.advice + '</div></div>';
                     }
 
-                    // 始终附加 AI 完整原始回复，确保无遗漏
-                    html += `<details style="margin-top:16px;">
-                  <summary style="cursor:pointer;color:#8a7e72;font-size:0.8rem;letter-spacing:1px;">AI 完整分析原文</summary>
-                  <div style="margin-top:8px;padding:12px;background:rgba(0,0,0,0.03);border-radius:8px;color:#5c5248;font-size:0.85rem;line-height:1.8;white-space:pre-wrap;">${content}</div>
-                </details>`;
+                    html += '<details style="margin-top:16px;"><summary style="cursor:pointer;color:#8a7e72;font-size:0.8rem;letter-spacing:1px;">AI 完整分析原文</summary>' +
+                        '<div style="margin-top:8px;padding:12px;background:rgba(0,0,0,0.03);border-radius:8px;color:#5c5248;font-size:0.85rem;line-height:1.8;white-space:pre-wrap;">' + content + '</div></details>';
 
                     harmonyDiv.innerHTML = html;
                 } else {
-                    // JSON 解析失败，回退为纯文本
-                    harmonyDiv.innerHTML = `
-                  <strong style="color:#b0887e;">✦ DeepSeek-V4-Pro 配色分析结果：</strong><br><br>
-                  ${content.replace(/\n/g, '<br>')}
-                `;
+                    harmonyDiv.innerHTML = '<strong style="color:#b0887e;">✦ DeepSeek-V4-Pro 配色分析结果：</strong><br><br>' + content.replace(/\n/g, '<br>');
                 }
             } catch (error) {
                 skeletonContainer.classList.remove('active');
                 harmonyDiv.classList.add('show');
-                harmonyDiv.innerHTML = `
-              <strong style="color:#c9b896;">请求失败：</strong>
-              ${error.message}<br><br>
-              <small style="color:#b0a599;">
-                ⚠ 请通过 Live Server 或本地 HTTP 服务器访问页面（而非 file:// 协议），否则浏览器会阻止跨域请求。<br>
-                启动方式：在项目目录下运行 <code>python -m http.server 8080</code> 或使用 VS Code 的 Live Server 插件。
-              </small>
-            `;
+                harmonyDiv.innerHTML = '<strong style="color:#c9b896;">请求失败：</strong>' + error.message + '<br><br>' +
+                    '<small style="color:#b0a599;">⚠ 请通过 Live Server 或本地 HTTP 服务器访问页面（而非 file:// 协议），否则浏览器会阻止跨域请求。<br>' +
+                    '启动方式：在项目目录下运行 <code>python -m http.server 8080</code> 或使用 VS Code 的 Live Server 插件。</small>';
             }
         }
 
@@ -2047,33 +1912,6 @@
         function showLoading(show) {
             document.getElementById('loadingOverlay').classList.toggle('show', show);
         }
-
-        // ==================== 页面初始化 ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            initChart();
-            initMarquee();
-
-            // 拖拽上传支持
-            const uploadArea = document.getElementById('uploadArea');
-            uploadArea.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                uploadArea.style.borderColor = '#c4a59d';
-            });
-            uploadArea.addEventListener('dragleave', () => {
-                uploadArea.style.borderColor = '#d9cec3';
-            });
-            uploadArea.addEventListener('drop', (e) => {
-                e.preventDefault();
-                uploadArea.style.borderColor = '#d9cec3';
-                const file = e.dataTransfer.files[0];
-                if (file && file.type.startsWith('image/')) {
-                    const dt = new DataTransfer();
-                    dt.items.add(file);
-                    document.getElementById('fileInput').files = dt.files;
-                    handleFileSelect({ target: { files: dt.files } });
-                }
-            });
-        });
 
         // ==================== Infinite Marquee 初始化 ====================
         function initMarquee() {
@@ -2089,18 +1927,43 @@
                 { text: 'ColorNova', dot: '#c9b896' },
             ];
 
-            // 生成两份完全一样的列表用于无缝循环
-            const listHtml = items.map(item => `
-                <div class="marquee-logo-block">
-                    <div class="mini-logo" style="border-color:${item.dot};">
-                        <span class="mini-dot" style="background:${item.dot};"></span>
-                    </div>
-                    <span class="mini-text">${item.text}</span>
-                </div>
-            `).join('');
+            const listHtml = items.map(function(item) {
+                return '<div class="marquee-logo-block">' +
+                    '<div class="mini-logo" style="border-color:' + item.dot + ';">' +
+                    '<span class="mini-dot" style="background:' + item.dot + ';"></span>' +
+                    '</div>' +
+                    '<span class="mini-text">' + item.text + '</span>' +
+                    '</div>';
+            }).join('');
 
-            track.innerHTML = `<div class="marquee-item">${listHtml}</div><div class="marquee-copy">${listHtml}</div>`;
+            track.innerHTML = '<div class="marquee-item">' + listHtml + '</div><div class="marquee-copy">' + listHtml + '</div>';
         }
+
+        // ==================== 页面初始化 ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            initChart();
+            initMarquee();
+
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.style.borderColor = '#c4a59d';
+            });
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.style.borderColor = '#d9cec3';
+            });
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.style.borderColor = '#d9cec3';
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const dt = new DataTransfer();
+                    dt.items.add(file);
+                    document.getElementById('fileInput').files = dt.files;
+                    handleFileSelect({ target: { files: dt.files } });
+                }
+            });
+        });
     </script>
 </body>
 </html>
