@@ -58,86 +58,110 @@
             position: fixed;
             inset: 0;
             z-index: -2;
-            background: linear-gradient(135deg, #efe8e0 0%, #e8e0d9 25%, #f0ebe5 50%, #e5ddd8 75%, #ece5dd 100%);
+            background: linear-gradient(165deg, #f3ede8 0%, #ebe3da 25%, #f0e9e2 50%, #e8ded4 75%, #f2ece6 100%);
         }
 
         .aurora-bg {
             position: fixed;
-            inset: -50%;
+            inset: -60%;
             z-index: -1;
             pointer-events: none;
-            filter: blur(80px);
-            opacity: 0.65;
+            filter: blur(100px);
+            opacity: 0.58;
         }
 
         .aurora-layer {
             position: absolute;
             border-radius: 50%;
-            animation: auroraFlow 18s ease-in-out infinite;
+            animation: auroraFlow var(--aurora-dur, 20s) ease-in-out infinite;
+            animation-delay: var(--aurora-delay, 0s);
+            mix-blend-mode: multiply;
         }
 
+        /* 莫兰迪紫 — 左上区域 */
         .aurora-1 {
-            width: 60vw;
-            height: 60vw;
-            background: radial-gradient(circle at 30% 30%, rgba(184, 169, 201, 0.35) 0%, rgba(200, 150, 150, 0.18) 40%, transparent 70%);
-            top: -10%;
-            left: -10%;
-            animation-delay: 0s;
-            animation-duration: 20s;
+            width: 65vw;
+            height: 65vw;
+            background: radial-gradient(circle at 35% 35%, rgba(184, 169, 201, 0.42) 0%, rgba(184, 169, 201, 0.18) 35%, transparent 65%);
+            top: -18%;
+            left: -12%;
+            --aurora-dur: 22s;
+            --aurora-delay: 0s;
         }
 
+        /* 莫兰迪绿 — 右下区域 */
         .aurora-2 {
-            width: 50vw;
-            height: 50vw;
-            background: radial-gradient(circle at 60% 60%, rgba(168, 181, 162, 0.30) 0%, rgba(180, 190, 160, 0.15) 40%, transparent 70%);
-            top: 30%;
-            right: -15%;
-            animation-delay: -6s;
-            animation-duration: 22s;
-        }
-
-        .aurora-3 {
             width: 55vw;
             height: 55vw;
-            background: radial-gradient(circle at 40% 70%, rgba(201, 184, 150, 0.28) 0%, rgba(200, 170, 140, 0.14) 40%, transparent 70%);
-            bottom: -20%;
-            left: 20%;
-            animation-delay: -12s;
-            animation-duration: 24s;
+            background: radial-gradient(circle at 55% 55%, rgba(168, 181, 162, 0.38) 0%, rgba(168, 181, 162, 0.15) 35%, transparent 65%);
+            top: 28%;
+            right: -18%;
+            --aurora-dur: 24s;
+            --aurora-delay: -7s;
         }
 
+        /* 莫兰迪粉 — 右上区域 */
+        .aurora-3 {
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle at 60% 30%, rgba(196, 165, 157, 0.35) 0%, rgba(196, 165, 157, 0.14) 35%, transparent 65%);
+            top: -10%;
+            right: 5%;
+            --aurora-dur: 26s;
+            --aurora-delay: -13s;
+        }
+
+        /* 莫兰迪暖驼 — 左下区域 */
         .aurora-4 {
+            width: 58vw;
+            height: 58vw;
+            background: radial-gradient(circle at 30% 60%, rgba(201, 184, 150, 0.34) 0%, rgba(201, 184, 150, 0.13) 35%, transparent 65%);
+            bottom: -15%;
+            left: 8%;
+            --aurora-dur: 28s;
+            --aurora-delay: -5s;
+        }
+
+        /* 雾灰蓝 — 中偏上 */
+        .aurora-5 {
             width: 45vw;
             height: 45vw;
-            background: radial-gradient(circle at 70% 20%, rgba(196, 165, 157, 0.30) 0%, rgba(210, 160, 150, 0.15) 40%, transparent 70%);
-            top: 10%;
-            right: 10%;
-            animation-delay: -4s;
-            animation-duration: 21s;
+            background: radial-gradient(circle at 50% 35%, rgba(162, 174, 189, 0.28) 0%, rgba(186, 178, 172, 0.12) 35%, transparent 65%);
+            top: 20%;
+            left: 25%;
+            --aurora-dur: 30s;
+            --aurora-delay: -10s;
         }
 
-        .aurora-5 {
-            width: 40vw;
-            height: 40vw;
-            background: radial-gradient(circle at 25% 55%, rgba(214, 236, 240, 0.25) 0%, rgba(200, 220, 225, 0.12) 40%, transparent 70%);
-            top: 40%;
-            left: 30%;
-            animation-delay: -9s;
-            animation-duration: 26s;
+        /* 暖米光晕 — 中心区域 */
+        .aurora-6 {
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle at 48% 52%, rgba(210, 195, 180, 0.25) 0%, rgba(220, 205, 188, 0.10) 35%, transparent 65%);
+            top: -5%;
+            left: 10%;
+            --aurora-dur: 32s;
+            --aurora-delay: -16s;
         }
 
         @keyframes auroraFlow {
-            0%, 100% {
-                transform: translate(0, 0) scale(1);
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
             }
-            25% {
-                transform: translate(4%, -3%) scale(1.05);
+            20% {
+                transform: translate(3%, -2%) scale(1.04) rotate(0.8deg);
             }
-            50% {
-                transform: translate(-2%, 5%) scale(0.95);
+            40% {
+                transform: translate(-2%, -4%) scale(0.96) rotate(-0.5deg);
             }
-            75% {
-                transform: translate(-5%, -1%) scale(1.04);
+            60% {
+                transform: translate(4%, 3%) scale(1.03) rotate(0.3deg);
+            }
+            80% {
+                transform: translate(-3%, 2%) scale(0.97) rotate(-0.6deg);
+            }
+            100% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
             }
         }
 
@@ -961,6 +985,7 @@
         <div class="aurora-layer aurora-3"></div>
         <div class="aurora-layer aurora-4"></div>
         <div class="aurora-layer aurora-5"></div>
+        <div class="aurora-layer aurora-6"></div>
     </div>
 
     <div class="loading-overlay" id="loadingOverlay">
