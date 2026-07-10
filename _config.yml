@@ -1,3 +1,1 @@
-theme: jekyll-theme-cayman
-title: 图片颜色聚类可视化
-description: 基于 K-Means++ 的像素色彩聚类分析工具，集成 ECharts 可视化与 DeepSeek AI 配色评估
+# GitHub Pages static site — no Jekyll theme
